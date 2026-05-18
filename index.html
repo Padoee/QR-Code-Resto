@@ -1,194 +1,282 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Roue de la Fortune - Restaurant</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f9f2e7 0%, #ffd9b3 100%);
-      color: #333;
-      min-height: 100vh;
-      margin: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .container {
-      width: 100%;
-      max-width: 720px;
-      background: #fff;
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.12);
-      overflow: hidden;
-      text-align: center;
-      padding: 32px;
-    }
-    h1 {
-      margin: 0 0 16px;
-      color: #d45200;
-    }
-    p {
-      margin: 0 0 24px;
-      line-height: 1.6;
-    }
-    button {
-      background: #d45200;
-      color: white;
-      border: none;
-      border-radius: 999px;
-      padding: 16px 32px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 12px 24px rgba(212,82,0,0.3);
-    }
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 16px 28px rgba(212,82,0,0.36);
-    }
-    .wheel-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 520px;
-      margin: 0 auto 24px;
-    }
-    .wheel {
-      width: 100%;
-      border-radius: 50%;
-      border: 18px solid #f7d7b8;
-      box-sizing: border-box;
-      overflow: hidden;
-      position: relative;
-      aspect-ratio: 1 / 1;
-      transform: rotate(0deg);
-      transition: transform 5s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .slice {
-      position: absolute;
-      width: 50%;
-      height: 50%;
-      top: 50%;
-      left: 50%;
-      transform-origin: 0% 0%;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 16px;
-      box-sizing: border-box;
-      color: #fff;
-      font-weight: bold;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.25);
-    }
-    .slice span {
-      transform: rotate(45deg);
-      display: inline-block;
-      text-align: center;
-      width: 140px;
-    }
-    .pointer {
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 32px solid #d45200;
-    }
-    .result {
-      margin-top: 18px;
-      padding: 18px 20px;
-      background: #fff5e8;
-      border: 1px solid #ffd4a8;
-      border-radius: 18px;
-      font-size: 1.1rem;
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .small-note {
-      margin-top: 16px;
-      font-size: 0.95rem;
-      color: #7b5335;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code — Roue des Saveurs</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0D080;
+    --deep: #1A0A00;
+    --cream: #FDF6E3;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--deep);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    color: var(--cream);
+  }
+  .card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.8;
+    margin-bottom: 1.5rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+  p.sub {
+    font-size: 0.85rem;
+    color: rgba(253,246,227,0.5);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    text-align: left;
+  }
+  label { font-size: 0.82rem; color: rgba(253,246,227,0.6); font-weight: 500; }
+  input {
+    padding: 0.85rem 1rem;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 10px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--gold); }
+  input::placeholder { color: rgba(253,246,227,0.3); }
+  .btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--gold), #8B6914);
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.35);
+    margin-bottom: 2rem;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.5); }
+
+  .qr-area {
+    display: none;
+  }
+  .qr-area.show { display: block; }
+
+  .line-deco {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 2rem;
+  }
+
+  #qr-wrapper {
+    background: white;
+    display: inline-block;
+    padding: 1.2rem;
+    border-radius: 16px;
+    box-shadow: 0 0 40px rgba(201,168,76,0.2);
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  #qr-wrapper::after {
+    content: '🍽';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.6rem;
+    background: white;
+    padding: 4px;
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  .qr-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+  .qr-sub {
+    font-size: 0.8rem;
+    color: rgba(253,246,227,0.4);
+    margin-bottom: 1.5rem;
+  }
+  .btn-dl {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 10px;
+    color: var(--gold);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.2s;
+    margin: 0 0.25rem;
+  }
+  .btn-dl:hover { background: rgba(201,168,76,0.1); }
+
+  .tip {
+    margin-top: 2rem;
+    background: rgba(201,168,76,0.07);
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 0.78rem;
+    color: rgba(253,246,227,0.4);
+    line-height: 1.6;
+    text-align: left;
+  }
+  .tip strong { color: var(--gold); }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Roue de la Fortune du Restaurant</h1>
-    <p>Scannez le QR code, laissez un avis Google puis faites tourner la roue pour gagner un dessert, un plat, une boisson ou une réduction.</p>
-    <button id="startButton">Je veux tourner la roue</button>
-    <div class="wheel-wrapper" id="wheelSection" style="display:none;">
-      <div class="pointer"></div>
-      <div class="wheel" id="wheel"></div>
-      <div class="result" id="resultMessage">Appuyez sur le bouton pour tourner.</div>
-    </div>
-    <div class="small-note">Après avoir cliqué sur OK, la page ouvrira les avis Google dans un nouvel onglet et affichera directement la roue.</div>
+<div class="card">
+  <div class="logo">🍽 Le Gourmet — Administration</div>
+
+  <h1>Générateur de QR Code</h1>
+  <p class="sub">Configurez votre roue de la fortune et générez le QR code à afficher en salle.</p>
+
+  <div class="input-group">
+    <label>URL de la page Roue de la Fortune</label>
+    <input type="text" id="pageUrl" placeholder="https://votre-site.com/roue-fortune.html"
+           value="">
   </div>
-  <script>
-    const rewards = [
-      { label: 'Gagner un dessert', color: '#f16b6f' },
-      { label: 'Gagner un plat', color: '#ed8f60' },
-      { label: 'Gagner une boisson', color: '#f2c94c' },
-      { label: '10% de réduction', color: '#6bbf59' },
-      { label: 'Entrée offerte', color: '#4198d5' },
-      { label: 'Chèque cadeau', color: '#9b5fc4' }
-    ];
-    const startButton = document.getElementById('startButton');
-    const wheel = document.getElementById('wheel');
-    const resultMessage = document.getElementById('resultMessage');
-    const wheelSection = document.getElementById('wheelSection');
-    const reviewUrl = 'https://www.google.com/search?q=restaurant&ludocid=YOUR_PLACE_ID#lrd=0x0:0x0,1';
+  <div class="input-group">
+    <label>URL Google Avis (Place ID)</label>
+    <input type="text" id="googleUrl" placeholder="https://search.google.com/local/writereview?placeid=..."
+           value="https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID">
+  </div>
 
-    function buildWheel() {
-      const sliceAngle = 360 / rewards.length;
-      rewards.forEach((reward, index) => {
-        const slice = document.createElement('div');
-        slice.classList.add('slice');
-        slice.style.background = reward.color;
-        slice.style.transform = `rotate(${sliceAngle * index}deg)`;
-        slice.innerHTML = `<span>${reward.label}</span>`;
-        wheel.appendChild(slice);
-      });
-    }
+  <button class="btn" onclick="generateQR()">✨ Générer le QR Code</button>
 
-    function spinWheel() {
-      const randomIndex = Math.floor(Math.random() * rewards.length);
-      const sliceAngle = 360 / rewards.length;
-      const rotateAmount = 360 * 6 + (360 - randomIndex * sliceAngle - sliceAngle / 2);
-      wheel.style.transition = 'transform 5s cubic-bezier(0.22, 1, 0.36, 1)';
-      wheel.style.transform = `rotate(${rotateAmount}deg)`;
-      resultMessage.textContent = 'La roue tourne...';
-      startButton.disabled = true;
-      setTimeout(() => {
-        resultMessage.textContent = `Félicitations ! ${rewards[randomIndex].label}`;
-        startButton.textContent = 'Chance utilisée';
-        startButton.disabled = true;
-      }, 5200);
-    }
+  <div class="qr-area" id="qrArea">
+    <div class="line-deco"></div>
+    <p class="qr-label">Votre QR Code est prêt !</p>
+    <p class="qr-sub">Scannez pour tester, ou téléchargez pour l'imprimer</p>
+    <div id="qr-wrapper"><div id="qrcode"></div></div>
+    <br>
+    <button class="btn-dl" onclick="downloadQR()">📥 Télécharger PNG</button>
 
-    function askForReview() {
-      const message = 'Avant de faire tourner la roue, merci de laisser un avis Google. Cliquez sur OK pour ouvrir les avis.';
-      const accepted = window.confirm(message);
-      if (!accepted) {
-        alert('Vous devez accepter pour accéder à la roue.');
-        return;
-      }
-      window.open(reviewUrl, '_blank');
-      wheelSection.style.display = 'block';
-      resultMessage.textContent = 'Vous pouvez maintenant tourner la roue !';
-      startButton.textContent = 'Tourner la roue';
-      startButton.removeEventListener('click', askForReview);
-      startButton.addEventListener('click', spinWheel);
-    }
+    <div class="tip">
+      <strong>📋 Instructions :</strong><br>
+      1. Hébergez le fichier <code>roue-fortune-restaurant.html</code> sur votre serveur web.<br>
+      2. Entrez son URL ci-dessus et regénérez le QR code.<br>
+      3. Dans le fichier HTML, remplacez <code>YOUR_PLACE_ID</code> par votre vrai identifiant Google Business.<br>
+      4. Imprimez et placez le QR code sur les tables, l'addition ou à l'accueil.
+    </div>
+  </div>
+</div>
 
-    buildWheel();
-    startButton.addEventListener('click', askForReview);
-  </script>
+<script>
+let qrInstance = null;
+
+function generateQR() {
+  const url = document.getElementById('pageUrl').value.trim() || window.location.href;
+  const googleUrl = document.getElementById('googleUrl').value.trim();
+
+  // Inject Google URL into the page URL as param if needed
+  const finalUrl = url || 'https://votre-restaurant.com/roue-fortune.html';
+
+  document.getElementById('qrcode').innerHTML = '';
+  if (qrInstance) { qrInstance = null; }
+
+  qrInstance = new QRCode(document.getElementById('qrcode'), {
+    text: finalUrl,
+    width: 220,
+    height: 220,
+    colorDark: '#1A0A00',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById('qrArea').classList.add('show');
+  document.getElementById('qrArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#qrcode canvas');
+  if (!canvas) { alert('Générez d\'abord le QR code.'); return; }
+
+  // Create a nicer download canvas
+  const dl = document.createElement('canvas');
+  dl.width = 320; dl.height = 380;
+  const ctx = dl.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#1A0A00';
+  ctx.roundRect(0, 0, 320, 380, 20);
+  ctx.fill();
+
+  // Gold border
+  ctx.strokeStyle = '#C9A84C';
+  ctx.lineWidth = 2;
+  ctx.roundRect(8, 8, 304, 364, 16);
+  ctx.stroke();
+
+  // QR white background
+  ctx.fillStyle = 'white';
+  ctx.roundRect(40, 60, 240, 240, 12);
+  ctx.fill();
+
+  // QR code
+  ctx.drawImage(canvas, 50, 70, 220, 220);
+
+  // Text
+  ctx.fillStyle = '#F0D080';
+  ctx.font = 'bold 16px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('🍽 Tentez votre chance !', 160, 45);
+
+  ctx.fillStyle = '#C9A84C';
+  ctx.font = '13px sans-serif';
+  ctx.fillText('Scannez pour gagner un cadeau', 160, 340);
+  ctx.font = '11px sans-serif';
+  ctx.fillStyle = 'rgba(253,246,227,0.4)';
+  ctx.fillText('⭐ Laissez-nous un avis Google', 160, 360);
+
+  const link = document.createElement('a');
+  link.download = 'qrcode-roue-fortune.png';
+  link.href = dl.toDataURL('image/png');
+  link.click();
+}
+</script>
 </body>
 </html>
