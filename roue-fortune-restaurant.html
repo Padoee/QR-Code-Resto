@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Roue des Saveurs ✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0D080;
+    --gold-dark: #8B6914;
+    --deep: #1A0A00;
+    --cream: #FDF6E3;
+    --red: #8B1A1A;
+    --green: #1A5C2A;
+    --blue: #1A2E5C;
+    --purple: #3D1A5C;
+    --orange: #C45000;
+    --teal: #0A4A3C;
+    --pink: #8B2252;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--deep);
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--cream);
+  }
+
+  /* ─── PARTICLES ─── */
+  .particles {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: float linear infinite;
+    opacity: 0;
+  }
+  @keyframes float {
+    0%   { transform: translateY(100vh) scale(0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+  }
+
+  /* ─── SCREENS ─── */
+  .screen {
+    display: none;
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 2rem;
+    text-align: center;
+  }
+  .screen.active { display: flex; }
+
+  /* ─── SCREEN 1: DEMANDE AVIS ─── */
+  #screen-review .card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 24px;
+    padding: 3rem 2.5rem;
+    max-width: 420px;
+    width: 100%;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .restaurant-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    opacity: 0.8;
+  }
+
+  .gift-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    animation: bounce 2s ease-in-out infinite;
+    display: block;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+
+  .card h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+    color: rgba(253,246,227,0.7);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .prizes-preview {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .prize-tag {
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 0.3rem 0.8rem;
+    font-size: 0.78rem;
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.5); }
+  .btn-primary:hover::after { opacity: 1; }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    display: block;
+    margin-top: 1rem;
+    padding: 0.6rem;
+    background: transparent;
+    color: rgba(253,246,227,0.4);
+    font-size: 0.8rem;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+  .btn-secondary:hover { color: rgba(253,246,227,0.7); }
+
+  /* ─── SCREEN 2: REDIRECT ─── */
+  #screen-redirect .content {
+    max-width: 380px;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .spinner-ring {
+    width: 80px; height: 80px;
+    border: 3px solid rgba(201,168,76,0.2);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 2rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #screen-redirect h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+  }
+  #screen-redirect p { color: rgba(253,246,227,0.6); line-height: 1.6; margin-bottom: 2rem; }
+  #screen-redirect .google-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: white;
+    color: #333;
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    cursor: pointer;
+  }
+  .google-g {
+    font-size: 1.1rem;
+    background: linear-gradient(135deg, #4285f4, #ea4335, #fbbc05, #34a853);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+  }
+  .manual-link {
+    font-size: 0.82rem;
+    color: rgba(253,246,227,0.5);
+    margin-top: 1rem;
+  }
+  .manual-link a { color: var(--gold); text-decoration: underline; cursor: pointer; }
+
+  /* ─── SCREEN 3: ROUE ─── */
+  #screen-wheel {
+    padding: 1.5rem;
+  }
+  #screen-wheel h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+    animation: slideUp 0.6s both;
+  }
+  #screen-wheel .subtitle {
+    font-size: 0.85rem;
+    color: rgba(253,246,227,0.5);
+    margin-bottom: 1.5rem;
+    animation: slideUp 0.6s 0.1s both;
+  }
+
+  /* Wheel container */
+  .wheel-container {
+    position: relative;
+    width: 320px; height: 320px;
+    margin: 0 auto;
+    animation: slideUp 0.6s 0.2s both;
+  }
+
+  /* Pointer */
+  .pointer {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  }
+  .pointer svg { width: 36px; height: 36px; }
+
+  /* Outer ring */
+  .wheel-outer {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--gold), var(--gold-dark), var(--gold), var(--gold-dark), var(--gold));
+    box-shadow: 0 0 40px rgba(201,168,76,0.4), 0 0 80px rgba(201,168,76,0.1);
+  }
+
+  canvas#wheel {
+    position: relative;
+    z-index: 2;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* Center button */
+  .wheel-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #fff8e7, #c9a84c);
+    border: 4px solid var(--deep);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--deep);
+    letter-spacing: 0.05em;
+    text-align: center;
+    line-height: 1.2;
+    transition: transform 0.2s;
+    padding: 0.5rem;
+  }
+  .wheel-center:hover { transform: translate(-50%, -50%) scale(1.08); }
+  .wheel-center:active { transform: translate(-50%, -50%) scale(0.96); }
+
+  .spin-btn {
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: 1.5rem auto 0;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+    transition: all 0.3s;
+    animation: slideUp 0.6s 0.3s both;
+    letter-spacing: 0.05em;
+  }
+  .spin-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.5); }
+  .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ─── MODAL PRIZE ─── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    backdrop-filter: blur(6px);
+  }
+  .modal-overlay.show { display: flex; }
+  .modal {
+    background: linear-gradient(145deg, #1e0e00, #2a1500);
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 60px rgba(201,168,76,0.1);
+    animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.5) rotate(-5deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+  .confetti-emoji {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 1rem;
+    animation: tada 0.8s 0.3s both;
+  }
+  @keyframes tada {
+    0%   { transform: scale(0) rotate(-20deg); }
+    60%  { transform: scale(1.2) rotate(5deg); }
+    80%  { transform: scale(0.95) rotate(-3deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: rgba(253,246,227,0.6);
+    margin-bottom: 0.5rem;
+  }
+  .modal .prize-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold-light);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .modal .prize-desc {
+    font-size: 0.88rem;
+    color: rgba(253,246,227,0.5);
+    margin-bottom: 2rem;
+    line-height: 1.5;
+  }
+  .coupon-box {
+    background: rgba(201,168,76,0.1);
+    border: 1px dashed var(--gold);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    font-size: 0.82rem;
+    color: rgba(253,246,227,0.6);
+  }
+  .coupon-code {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    display: block;
+    margin-top: 0.3rem;
+  }
+  .modal .btn-primary { max-width: none; }
+
+  /* ─── DECORATIVE ─── */
+  .stars-deco {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1rem;
+    opacity: 0.15;
+    z-index: 0;
+  }
+
+  .line-deco {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 1.5rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- Particles -->
+<div class="particles" id="particles"></div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SCREEN 1 : DEMANDE D'AVIS              -->
+<!-- ═══════════════════════════════════════ -->
+<div class="screen active" id="screen-review">
+  <div class="card">
+    <div class="restaurant-logo">🍽 Le Gourmet</div>
+    <div class="line-deco"></div>
+    <span class="gift-icon">🎁</span>
+    <h1>Un cadeau vous attend !</h1>
+    <p>Laissez-nous votre avis Google et tentez votre chance sur notre <strong>Roue des Saveurs</strong> pour gagner une récompense exclusive.</p>
+
+    <div class="prizes-preview">
+      <span class="prize-tag">🍰 Dessert offert</span>
+      <span class="prize-tag">🍷 Boisson offerte</span>
+      <span class="prize-tag">🍽 Plat offert</span>
+      <span class="prize-tag">☕ Café offert</span>
+      <span class="prize-tag">🎉 -20% sur l'addition</span>
+    </div>
+
+    <button class="btn-primary" onclick="goToReview()">
+      ⭐ Laisser un avis Google
+    </button>
+    <button class="btn-secondary" onclick="skipToWheel()">
+      J'ai déjà laissé un avis →
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SCREEN 2 : REDIRECTION GOOGLE          -->
+<!-- ═══════════════════════════════════════ -->
+<div class="screen" id="screen-redirect">
+  <div class="content">
+    <div class="spinner-ring"></div>
+    <h2>Merci pour votre avis !</h2>
+    <p>Vous allez être redirigé vers Google pour laisser votre avis. Une fois votre avis déposé, revenez ici pour faire tourner la roue !</p>
+
+    <div class="google-badge" onclick="openGoogleAndContinue()">
+      <span class="google-g">G</span>
+      Ouvrir Google Avis
+    </div>
+
+    <p class="manual-link">
+      Lien déjà ouvert ? <a onclick="showWheel()">Accéder à la roue →</a>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- SCREEN 3 : ROUE DE LA FORTUNE          -->
+<!-- ═══════════════════════════════════════ -->
+<div class="screen" id="screen-wheel">
+  <h2>La Roue des Saveurs</h2>
+  <p class="subtitle">Tournez la roue et découvrez votre récompense 🍀</p>
+
+  <div class="wheel-container">
+    <!-- Pointer -->
+    <div class="pointer">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 34 L6 8 Q18 2 30 8 Z" fill="#C9A84C"/>
+        <path d="M18 34 L6 8 Q18 2 30 8 Z" fill="url(#pg)" />
+        <defs>
+          <linearGradient id="pg" x1="6" y1="8" x2="30" y2="8" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#F0D080"/>
+            <stop offset="1" stop-color="#8B6914"/>
+          </linearGradient>
+        </defs>
+        <circle cx="18" cy="9" r="3" fill="#fff8e7"/>
+      </svg>
+    </div>
+
+    <!-- Outer glow ring -->
+    <div class="wheel-outer"></div>
+
+    <!-- Canvas wheel -->
+    <canvas id="wheel" width="320" height="320"></canvas>
+
+    <!-- Center -->
+    <div class="wheel-center" onclick="spinWheel()">TOURNER</div>
+  </div>
+
+  <button class="spin-btn" id="spinBtn" onclick="spinWheel()">
+    🎡 Faire tourner la roue !
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MODAL : RÉSULTAT                        -->
+<!-- ═══════════════════════════════════════ -->
+<div class="modal-overlay" id="prizeModal">
+  <div class="modal">
+    <span class="confetti-emoji" id="prizeEmoji">🎉</span>
+    <h3>Félicitations !</h3>
+    <div class="prize-name" id="prizeName">Dessert offert</div>
+    <p class="prize-desc" id="prizeDesc">Présentez ce bon à votre serveur·euse avant de partir.</p>
+
+    <div class="coupon-box">
+      🎟 Votre bon cadeau
+      <span class="coupon-code" id="prizeCode">SAVEUR-0000</span>
+    </div>
+
+    <button class="btn-primary" onclick="closeModal()">
+      Fermer & montrer au serveur
+    </button>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG DES RÉCOMPENSES ───
+const prizes = [
+  { label: "Dessert\nOffert",   emoji: "🍰", color: "#8B1A1A",  desc: "Un dessert de votre choix offert par la maison !",    code: "DESSERT" },
+  { label: "Boisson\nOfferte",  emoji: "🍷", color: "#1A2E5C",  desc: "Une boisson (soft ou verre de vin) offerte !",         code: "BOISSON" },
+  { label: "Café\nOffert",      emoji: "☕", color: "#3D2800",  desc: "Un café ou thé offert en fin de repas.",               code: "CAFE"    },
+  { label: "Plat\nOffert",      emoji: "🍽", color: "#1A5C2A",  desc: "Un plat principal offert lors de votre prochaine visite.", code: "PLAT" },
+  { label: "-10%\nAddition",    emoji: "💫", color: "#5C1A4A",  desc: "10% de réduction sur votre addition de ce soir.",      code: "REMISE10" },
+  { label: "Apéritif\nMaison",  emoji: "🥂", color: "#4A3000",  desc: "Un apéritif maison offert pour commencer.",            code: "APERITIF" },
+  { label: "-20%\nAddition",    emoji: "🎉", color: "#C45000",  desc: "20% de réduction sur votre addition — c'est votre jour de chance !", code: "REMISE20" },
+  { label: "Entrée\nOfferte",   emoji: "🥗", color: "#0A4A3C",  desc: "Une entrée au choix offerte ce soir.",                 code: "ENTREE"  },
+];
+
+// ─── NAVIGATION ───
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// 🔧 REMPLACER PAR L'URL GOOGLE AVIS DU RESTAURANT
+const GOOGLE_REVIEW_URL = "https://search.google.com/local/writereview?placeid=YOUR_PLACE_ID";
+
+function goToReview() {
+  showScreen('screen-redirect');
+}
+
+function openGoogleAndContinue() {
+  window.open(GOOGLE_REVIEW_URL, '_blank');
+  setTimeout(() => {
+    document.querySelector('#screen-redirect .manual-link').style.display = 'block';
+  }, 3000);
+}
+
+function showWheel() {
+  showScreen('screen-wheel');
+  drawWheel();
+}
+
+function skipToWheel() {
+  showWheel();
+}
+
+// ─── CANVAS WHEEL ───
+const canvas = document.getElementById('wheel');
+const ctx = canvas.getContext('2d');
+const NUM = prizes.length;
+const ARC = (2 * Math.PI) / NUM;
+let currentAngle = 0;
+let spinning = false;
+
+function drawWheel(angle = 0) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const cx = canvas.width / 2, cy = canvas.height / 2, r = cx - 4;
+
+  for (let i = 0; i < NUM; i++) {
+    const start = angle + i * ARC;
+    const end   = start + ARC;
+    const p = prizes[i];
+
+    // Slice fill
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = p.color;
+    ctx.fill();
+
+    // Slice border
+    ctx.strokeStyle = 'rgba(201,168,76,0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Emoji + text
+    const mid = start + ARC / 2;
+    const tx = cx + (r * 0.62) * Math.cos(mid);
+    const ty = cy + (r * 0.62) * Math.sin(mid);
+
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.rotate(mid + Math.PI / 2);
+
+    // Emoji
+    ctx.font = '20px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.emoji, 0, -14);
+
+    // Label
+    ctx.font = 'bold 10.5px "DM Sans", sans-serif';
+    ctx.fillStyle = '#FDF6E3';
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur = 4;
+    const lines = p.label.split('\n');
+    lines.forEach((line, li) => {
+      ctx.fillText(line, 0, li * 13 + 3);
+    });
+    ctx.restore();
+  }
+
+  // Inner shadow circle
+  const grad = ctx.createRadialGradient(cx, cy, r * 0.5, cx, cy, r);
+  grad.addColorStop(0, 'transparent');
+  grad.addColorStop(1, 'rgba(0,0,0,0.15)');
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+  ctx.fillStyle = grad;
+  ctx.fill();
+}
+
+// ─── SPIN ───
+function spinWheel() {
+  if (spinning) return;
+  spinning = true;
+
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = true;
+  btn.textContent = '🌀 En cours…';
+
+  // Random full rotations + stop angle
+  const extraSpins = (5 + Math.floor(Math.random() * 5)) * 2 * Math.PI;
+  const stopAt = Math.random() * 2 * Math.PI;
+  const totalAngle = extraSpins + stopAt;
+
+  const duration = 4500;
+  const start = performance.now();
+  const startAngle = currentAngle;
+
+  function easeOut(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function frame(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = easeOut(progress);
+
+    currentAngle = startAngle + totalAngle * eased;
+    drawWheel(currentAngle);
+
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      currentAngle = startAngle + totalAngle;
+      spinning = false;
+      showResult();
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function showResult() {
+  // The pointer is at top (−π/2). Find which segment it points to.
+  const normalizedAngle = ((-currentAngle % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  const pointerAngle = (normalizedAngle + Math.PI * 1.5) % (2 * Math.PI);
+  const idx = Math.floor(pointerAngle / ARC) % NUM;
+  const prize = prizes[idx];
+
+  document.getElementById('prizeEmoji').textContent = prize.emoji;
+  document.getElementById('prizeName').textContent = prize.label.replace('\n', ' ');
+  document.getElementById('prizeDesc').textContent = prize.desc;
+
+  const randomNum = Math.floor(Math.random() * 9000 + 1000);
+  document.getElementById('prizeCode').textContent = prize.code + '-' + randomNum;
+
+  document.getElementById('prizeModal').classList.add('show');
+  launchConfetti();
+}
+
+function closeModal() {
+  document.getElementById('prizeModal').classList.remove('show');
+  // Reset spin button for screenshot / demo only
+  const btn = document.getElementById('spinBtn');
+  btn.disabled = false;
+  btn.textContent = '🎡 Faire tourner la roue !';
+}
+
+// ─── CONFETTI ───
+function launchConfetti() {
+  const container = document.getElementById('particles');
+  const colors = ['#C9A84C','#F0D080','#fff','#FF6B6B','#4ECDC4','#A8E6CF'];
+  for (let i = 0; i < 60; i++) {
+    const div = document.createElement('div');
+    div.style.cssText = `
+      position:fixed;
+      width:${4 + Math.random() * 6}px;
+      height:${4 + Math.random() * 6}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}vw;
+      top:${Math.random()*50 + 30}vh;
+      border-radius:${Math.random() > 0.5 ? '50%' : '2px'};
+      z-index:200;
+      pointer-events:none;
+      animation:conf ${1.5 + Math.random()*2}s ease-out forwards;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3500);
+  }
+}
+
+// ─── BACKGROUND PARTICLES ───
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${1 + Math.random() * 3}px;
+      height: ${1 + Math.random() * 3}px;
+      animation-duration: ${8 + Math.random() * 12}s;
+      animation-delay: ${Math.random() * 10}s;
+    `;
+    container.appendChild(p);
+  }
+}
+
+// ─── CONFETTI KEYFRAME (dynamic) ───
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+  @keyframes conf {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-80vh) rotate(${Math.random()*720}deg); opacity: 0; }
+  }
+`;
+document.head.appendChild(styleEl);
+
+// ─── INIT ───
+createParticles();
+drawWheel(); // draw initially so canvas is ready
+</script>
+
+</body>
+</html>
